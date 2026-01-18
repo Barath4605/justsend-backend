@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: justsend-backend
+    env: java
+    buildCommand: ./mvnw clean install -DskipTests
+    startCommand: java -jar target/justsend-backend-0.0.1-SNAPSHOT.jar
