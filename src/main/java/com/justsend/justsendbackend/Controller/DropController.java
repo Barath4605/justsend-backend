@@ -39,7 +39,7 @@ public class DropController {
         if(Instant.now().isAfter(data.getExpiresAt())) {
             return  ResponseEntity.status(HttpStatus.GONE).build();
         } else {
-            return new ResponseEntity<>(new GetSenderDto(data.getTextData()), HttpStatus.OK);
+            return new ResponseEntity<>(new GetSenderDto(data.getTextData(), 0), HttpStatus.OK);
         }
 
     }
