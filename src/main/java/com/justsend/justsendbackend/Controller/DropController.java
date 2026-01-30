@@ -23,9 +23,7 @@ public class DropController {
 
     @PostMapping("send")
     public ResponseEntity<PostSenderDto> save(@RequestBody GetSenderDto getSenderDto) {
-
         return ResponseEntity.ok(senderService.save(getSenderDto));
-
     }
 
     @GetMapping("/{code}")
@@ -34,12 +32,12 @@ public class DropController {
         Optional<DataEntity> opt = dataRepository.findByCode(code);
 
         if(opt.isEmpty()) {
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null );
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         DataEntity data = opt.get();
 
         if(Instant.now().isAfter(data.getExpiresAt())) {
-            return  ResponseEntity.notFound().build();
+            return  ResponseEntity.status(HttpStatus.GONE).build();
         } else {
             return new ResponseEntity<>(new GetSenderDto(data.getTextData()), HttpStatus.OK);
         }

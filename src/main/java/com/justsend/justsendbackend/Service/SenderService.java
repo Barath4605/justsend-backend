@@ -22,10 +22,14 @@ public class SenderService {
     public PostSenderDto save(GetSenderDto getSenderDto) {
         DataEntity dataEntity = new DataEntity();
 
+        int ttl = getSenderDto.totalDays();
+
+        if(ttl < 1 || ttl > 30) ttl = 3;
+
         dataEntity.setCode(code());
         dataEntity.setTextData(getSenderDto.text());
         dataEntity.setCreatedAt(Instant.now());
-        dataEntity.setExpiresAt(Instant.now().plus(3, ChronoUnit.DAYS));
+        dataEntity.setExpiresAt(Instant.now().plus(ttl, ChronoUnit.DAYS));
         dataEntity.setSizeBytes(getSenderDto.text().getBytes(StandardCharsets.UTF_8).length);
         dataEntity.setType(DataType.TEXT);
 
@@ -41,14 +45,10 @@ public class SenderService {
 //    ================ HELPER FUNCTIONS ================
 
     public String code() {
-        String codeTemp = UUID.randomUUID().toString();
-        StringBuilder code = new StringBuilder();
-
-        for(int i = 0; i < 6; i++) {
-            code.append(codeTemp.charAt(i));
-        }
-
-        return code.toString();
+        return UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 6);
     }
 
 }
