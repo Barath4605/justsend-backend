@@ -19,7 +19,7 @@ public class DataEntity {
     @Column(unique = true, nullable = false)
     private String code;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String textData;
 
     @Enumerated(EnumType.STRING)
@@ -34,6 +34,12 @@ public class DataEntity {
 
     @Column(nullable = false)
     private long sizeBytes;
+
+    @Column
+    private String fileUrl;
+
+    @Column
+    private String fileKey;
 
     public UUID getId() {
         return id;
@@ -89,5 +95,21 @@ public class DataEntity {
 
     public void setSizeBytes(long sizeBytes) {
         this.sizeBytes = sizeBytes;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getFileKey() {
+        return fileKey;
+    }
+
+    public void setFileKey(String fileKey) {
+        this.fileKey = fileKey;
     }
 }
