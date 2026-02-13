@@ -50,5 +50,4 @@ public class SenderService {
                 .replace("-", "")
                 .substring(0, 6);
     }
-
 }
