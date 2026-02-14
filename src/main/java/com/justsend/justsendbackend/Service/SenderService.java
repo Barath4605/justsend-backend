@@ -3,8 +3,8 @@ package com.justsend.justsendbackend.Service;
 import com.justsend.justsendbackend.Entity.DataEntity;
 import com.justsend.justsendbackend.Entity.DataType;
 import com.justsend.justsendbackend.Repository.DataRepository;
-import com.justsend.justsendbackend.dtos.GetSenderDto;
-import com.justsend.justsendbackend.dtos.PostSenderDto;
+import com.justsend.justsendbackend.dtos.GetTextDto;
+import com.justsend.justsendbackend.dtos.PostTextDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,26 +19,27 @@ public class SenderService {
 
     private final DataRepository dataRepository;
 
-    public PostSenderDto save(GetSenderDto getSenderDto) {
+    public PostTextDto save(GetTextDto getTextDto) {
         DataEntity dataEntity = new DataEntity();
 
-        int ttl = getSenderDto.totalDays();
+        int ttl = getTextDto.totalDays();
 
         if(ttl < 1 || ttl > 30) ttl = 3;
 
         dataEntity.setCode(code());
-        dataEntity.setTextData(getSenderDto.text());
+        dataEntity.setTextData(getTextDto.text());
         dataEntity.setCreatedAt(Instant.now());
         dataEntity.setExpiresAt(Instant.now().plus(ttl, ChronoUnit.DAYS));
-        dataEntity.setSizeBytes(getSenderDto.text().getBytes(StandardCharsets.UTF_8).length);
+        dataEntity.setSizeBytes(getTextDto.text().getBytes(StandardCharsets.UTF_8).length);
         dataEntity.setType(DataType.TEXT);
 
 
         dataRepository.save(dataEntity);
 
-        return new PostSenderDto(
+        return new PostTextDto(
                 dataEntity.getCode(),
-                dataEntity.getExpiresAt()
+                dataEntity.getExpiresAt(),
+                dataEntity.getType()
         );
     }
 
