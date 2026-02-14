@@ -6,9 +6,9 @@ import com.justsend.justsendbackend.Repository.DataRepository;
 import com.justsend.justsendbackend.Service.GeneratePresignedUrl;
 import com.justsend.justsendbackend.Service.ImageUploadService;
 import com.justsend.justsendbackend.Service.SenderService;
-import com.justsend.justsendbackend.dtos.GetSenderDto;
+import com.justsend.justsendbackend.dtos.GetTextDto;
 import com.justsend.justsendbackend.dtos.ImageResponseDto;
-import com.justsend.justsendbackend.dtos.PostSenderDto;
+import com.justsend.justsendbackend.dtos.PostTextDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +30,12 @@ public class DropController {
     private final GeneratePresignedUrl generatePresignedUrl;
 
     @PostMapping("send")
-    public ResponseEntity<PostSenderDto> save(@RequestBody GetSenderDto getSenderDto) {
-        return ResponseEntity.ok(senderService.save(getSenderDto));
+    public ResponseEntity<PostTextDto> save(@RequestBody GetTextDto getTextDto) {
+        return ResponseEntity.ok(senderService.save(getTextDto));
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<GetSenderDto> get(@PathVariable String code) {
+    public ResponseEntity<GetTextDto> get(@PathVariable String code) {
 
         Optional<DataEntity> opt = dataRepository.findByCode(code);
 
@@ -47,16 +47,16 @@ public class DropController {
         if(Instant.now().isAfter(data.getExpiresAt())) {
             return  ResponseEntity.status(HttpStatus.GONE).build();
         } else {
-            return new ResponseEntity<>(new GetSenderDto(data.getTextData(), 0), HttpStatus.OK);
+            return new ResponseEntity<>(new GetTextDto(data.getTextData(), 0, data.getType()), HttpStatus.OK);
         }
     }
 
-    @PostMapping("image")
+    @PostMapping("i")
     public ResponseEntity<ImageResponseDto> uploadImage(@RequestParam MultipartFile file) throws IOException {
         return ResponseEntity.ok(uploadService.imageUpload(file));
     }
 
-    @GetMapping("/image/{code}")
+    @GetMapping("/i/{code}")
     ResponseEntity<ImageResponseDto> getImage(@PathVariable String code) {
         Optional<DataEntity> opt = dataRepository.findByCode(code);
 
@@ -78,8 +78,8 @@ public class DropController {
                 new ImageResponseDto(
                         data.getCode(),
                         data.getExpiresAt(),
-                        generatePresignedUrl.generatePresignedUrl(data.getFileKey())
-
+                        generatePresignedUrl.generatePresignedUrl(data.getFileKey()),
+                        data.getType()
                 )
         );
     }
